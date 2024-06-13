@@ -1,4 +1,5 @@
-const { SlashCommandBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder, 
+    ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
 const { messageSender } = require('../helpers/messageSender')
 module.exports = {
     data: new SlashCommandBuilder()
@@ -45,7 +46,36 @@ module.exports = {
         const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
     
         collector.on('collect', async interaction => {
-                // kodlar
+            if (interaction.customId === 'tocreate') {
+				const modal = new ModalBuilder()
+					.setCustomId('addmodal')
+					.setTitle('Rol Ekle')
+		
+				const rolname = new TextInputBuilder()
+					.setCustomId('rolname')
+					.setLabel("Rol adı")
+					.setStyle(TextInputStyle.Short)
+		
+				const color = new TextInputBuilder()
+					.setCustomId('color')
+					.setLabel("Renk")
+					.setStyle(TextInputStyle.Short)
+				const emoji = new TextInputBuilder()
+					.setCustomId('emojiId')
+					.setLabel("Emoji ID")
+					.setStyle(TextInputStyle.Short)
+		
+				const rolnameAction = new ActionRowBuilder().addComponents(rolname)
+				const colorAction = new ActionRowBuilder().addComponents(color)
+				const emojiAction = new ActionRowBuilder().addComponents(emoji)
+
+				modal.addComponents(rolnameAction, colorAction, emojiAction)
+	
+				return await interaction.showModal(modal)
+			}
+            if (interaction.customId === 'toedit'){}
+            if (interaction.customId === 'touseradd'){}
+            if (interaction.customId === 'todelete'){}
         })
     
         collector.on('end', async collected => {
