@@ -3,6 +3,8 @@ const path = require('path')
 const fs = require('fs')
 require('dotenv').config()
 
+const db = require('./config/db')
+
 var client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -59,6 +61,7 @@ client.on('ready', () => {
     console.log('Bot hazır!')
 })
 
+db()
 client.login(process.env.TOKEN)
 .then(()=>console.log('Token girişi başarılı'))
 .catch((err)=>console.log("Hata: ", err))
