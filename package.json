@@ -1,0 +1,16 @@
+{
+  "name": "discord-moderation-bot",
+  "version": "1.0.0",
+  "description": "Moderation bot built with Discord v14 version, integrated with slash commands",
+  "main": "index.js",
+  "scripts": {
+    "bot": "node index.js"
+  },
+  "keywords": [],
+  "author": "Burak A. <burakyabgu@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^14.15.3",
+    "dotenv": "^16.4.5"
+  }
+}
