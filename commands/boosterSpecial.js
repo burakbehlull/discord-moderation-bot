@@ -202,6 +202,21 @@ client.on("interactionCreate", async (interaction) => {
             await user.save()
             await interaction.reply('Rol düzenlendi.')
         }
+        if(interaction.customId === "useraddModal") {
+            const userId = interaction.fields.getTextInputValue('chosenUserId')
+            const user = await User.findOne({userID: interaction.user.id})
+            const uRole = interaction.guild.roles.cache.get(user.role)
+            const member = await interaction.guild.members.fetch(userId)
+
+            if(!member) return await interaction.reply('Kullanıcı bulunamadı')
+            if(!uRole) return await interaction.reply('Rol bulunamadı')
+            if(user?.hasRole.includes(userId)) return await interaction.reply('Kullanıcı zaten role sahip.')
+            
+            await member.roles.add(user.role)
+            await user.hasRole.push(userId)
+            await user.save()
+            await interaction.reply(`<@${userId}> başarıyla role eklendi.`)
+        }
         return;
     }
 })
