@@ -115,7 +115,28 @@ module.exports = {
 				return await interaction.reply('Üstünüze kayıtlı rol yok.')
 
 			}
-            if (interaction.customId === 'touseradd'){}
+            if (interaction.customId === 'touseradd') {
+				const user = await User.findOne({userID: interaction.user.id})
+				const uRole = interaction.guild.roles.cache.get(user?.role)
+				if(user?.limit){
+					const useraddModal = new ModalBuilder()
+					.setCustomId('useraddModal')
+					.setTitle('Role Kişi Ekle')
+		
+					const chosenUserId = new TextInputBuilder()
+						.setCustomId('chosenUserId')
+						.setLabel('Kullanıcı ID')
+						.setPlaceholder(`Ekleyeceğiniz kullanıcının id'sini giriniz.`)
+						.setStyle(TextInputStyle.Short)
+			
+					const chosenUserIdAction = new ActionRowBuilder().addComponents(chosenUserId)
+					useraddModal.addComponents(chosenUserIdAction)
+			
+					
+					return await interaction.showModal(useraddModal)
+				}
+				await interaction.reply('Rolünüz yok.')
+			}
             if (interaction.customId === 'todelete'){}
         })
     
