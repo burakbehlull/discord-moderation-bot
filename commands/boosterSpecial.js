@@ -1,5 +1,7 @@
 const { SlashCommandBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder, 
-    ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
+    ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js')
+
+const User = require('../models/User')
 const { messageSender } = require('../helpers/messageSender')
 module.exports = {
     data: new SlashCommandBuilder()
@@ -161,7 +163,24 @@ client.on("interactionCreate", async (interaction) => {
             }
             return await interaction.reply('Rol oluşturuldu.')
         }
+        if (interaction.customId === "editmodal") {
+            const rolName = interaction.fields.getTextInputValue('rolname')
+            const color = interaction.fields.getTextInputValue('color')
+            const emojiId = interaction.fields.getTextInputValue('emojiId')
 
+            const user = await User.findOne({userID: interaction.user.id})
+            const uRole = interaction.guild.roles.cache.get(user.role)
+            const convertColor = color.startsWith('#') ? color : Number(color)
+            
+            await uRole.edit({
+                name: rolName,
+                color: convertColor,
+                icon: `https://cdn.discordapp.com/emojis/${emojiId}.png?size=96&quality=lossless`
+            })
+            user.eId = emojiId
+            await user.save()
+            await interaction.reply('Rol düzenlendi.')
+        }
         return;
     }
 })
