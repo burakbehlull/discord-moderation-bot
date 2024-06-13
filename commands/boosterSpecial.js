@@ -73,7 +73,46 @@ module.exports = {
 	
 				return await interaction.showModal(modal)
 			}
-            if (interaction.customId === 'toedit'){}
+			if (interaction.customId === 'toedit') {
+				const user = await User.findOne({userID: interaction.user.id})
+				const uRole = interaction.guild.roles.cache.get(user?.role)
+				if(user?.limit){
+					const editModal = new ModalBuilder()
+					.setCustomId('editmodal')
+					.setTitle('Rol Düzenle')
+		
+					const rolname = new TextInputBuilder()
+						.setCustomId('rolname')
+						.setLabel('Rol adı')
+						.setValue(`${uRole.name}`)
+						.setPlaceholder(`${uRole.name}`)
+						.setStyle(TextInputStyle.Short)
+			
+					const color = new TextInputBuilder()
+						.setCustomId('color')
+						.setLabel("Renk")
+						.setValue(`${uRole.color}`)
+						.setPlaceholder(`${uRole.color}`)
+						.setStyle(TextInputStyle.Short)
+						
+					const emoji = new TextInputBuilder()
+						.setCustomId('emojiId')
+						.setLabel("Emoji ID")
+						.setValue(`${user.eId}`)
+						.setPlaceholder(`${user.eId}`)
+						.setStyle(TextInputStyle.Short)
+			
+					const rolnameAction = new ActionRowBuilder().addComponents(rolname)
+					const colorAction = new ActionRowBuilder().addComponents(color)
+					const emojiAction = new ActionRowBuilder().addComponents(emoji)
+					editModal.addComponents(rolnameAction, colorAction, emojiAction)
+			
+					
+					return await interaction.showModal(editModal)
+				}
+				return await interaction.reply('Üstünüze kayıtlı rol yok.')
+
+			}
             if (interaction.customId === 'touseradd'){}
             if (interaction.customId === 'todelete'){}
         })
@@ -122,7 +161,7 @@ client.on("interactionCreate", async (interaction) => {
             }
             return await interaction.reply('Rol oluşturuldu.')
         }
-        
+
         return;
     }
 })
