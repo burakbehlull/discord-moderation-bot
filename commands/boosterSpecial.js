@@ -89,4 +89,40 @@ module.exports = {
 
     },
 }
-    
+
+client.on("interactionCreate", async (interaction) => {
+    if(interaction.isModalSubmit()){
+        if (interaction.customId === "addmodal") {
+            const rolName = interaction.fields.getTextInputValue('rolname')
+            const color = interaction.fields.getTextInputValue('color')
+            const emojiId = interaction.fields.getTextInputValue('emojiId')
+            const hashtag = color.startsWith('#')
+            if(!hashtag) return await interaction.reply('Renk ataması yaparken lütfen başına # koyup, renk kodunuz giriniz.')
+            
+            const user = await User.findOne({userID: interaction.user.id})
+            
+            if(user?.limit) return await interaction.reply('Rolünüz zaten var!')
+            const role = await interaction.guild.roles.create({
+                name: rolName,
+                color: color,
+                icon: `https://cdn.discordapp.com/emojis/${emojiId}.png?size=96&quality=lossless`
+            })
+            if(user){
+                user.role = interaction.user.id
+                user.limit = false
+                user.eId = emojiId
+                await user.save()
+            } else {
+                await User.create({
+                    userID: interaction.user.id,
+                    role: role.id,
+                    limit: true,
+                    eId: emojiId
+                })
+            }
+            return await interaction.reply('Rol oluşturuldu.')
+        }
+        
+        return;
+    }
+})
