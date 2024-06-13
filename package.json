@@ -4,7 +4,7 @@
   "description": "Moderation bot built with Discord v14 version, integrated with slash commands",
   "main": "index.js",
   "scripts": {
-    "bot": "node index.js",
+    "start": "node index.js",
     "deploy": "node deploy-commands.js"
   },
   "keywords": [],
