@@ -137,7 +137,20 @@ module.exports = {
 				}
 				await interaction.reply('Rolünüz yok.')
 			}
-            if (interaction.customId === 'todelete'){}
+			if (interaction.customId === 'todelete') {
+				const user = await User.findOne({userID: interaction.user.id})
+				const uRole = interaction.guild.roles.cache.get(user.role)
+				if(!user){
+					return interaction.reply('Üstünüze kayıtlı rol yok.')
+				}
+				if (!uRole) {
+					return interaction.reply('Rol bulunamadı.')
+				}
+				uRole.delete()
+				user.limit = false
+				await user.save()
+				return await interaction.reply('Rol Silindi')
+			}
         })
     
         collector.on('end', async collected => {

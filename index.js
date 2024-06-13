@@ -5,7 +5,7 @@ require('dotenv').config()
 
 const db = require('./config/db')
 
-var client = new Client({
+var client = (global.client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMembers,
@@ -24,7 +24,7 @@ var client = new Client({
         GatewayIntentBits.DirectMessageTyping, 
         GatewayIntentBits.MessageContent,
     ],
-})
+}))
 
 client.commands = new Collection()
 
