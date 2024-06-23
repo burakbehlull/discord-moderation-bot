@@ -5,9 +5,6 @@ const roomSchema = new Schema({
     id: {
         type: String,
     },
-    name: {
-        type: String,
-    },
     ownerId: {
         type: String
     }
