@@ -23,6 +23,7 @@ MONGO_URI =
 | command | comment | situation |
 | ------ | ------ | ------ |
 | **specialbooster** |  Those who boost the server will be given a special role opening and management panel. | stable |
+| **roomsettings** |  Control panel for the created room | incomplete but stable |
 
 | feature | comment | situation |
 | ------ | ------ | ------ |

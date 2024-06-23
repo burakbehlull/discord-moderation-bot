@@ -1,6 +1,5 @@
 const { SlashCommandBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder, 
     ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js')
-var client;
 const User = require('../models/User')
 const { messageSender } = require('../helpers/messageSender')
 module.exports = {
@@ -11,7 +10,7 @@ module.exports = {
     
         const userId = await interaction.user.id;
         const sender = new messageSender(interaction)
-        const emoji = ""
+        const emoji = "<:kelepce:1000432684499218573>"
     
         const roleCreateBtn = new ButtonBuilder()
             .setCustomId('tocreate')
@@ -65,6 +64,7 @@ module.exports = {
 				const emoji = new TextInputBuilder()
 					.setCustomId('emojiId')
 					.setLabel("Emoji ID")
+                    .setRequired(false)
 					.setStyle(TextInputStyle.Short)
 		
 				const rolnameAction = new ActionRowBuilder().addComponents(rolname)
@@ -100,6 +100,7 @@ module.exports = {
 					const emoji = new TextInputBuilder()
 						.setCustomId('emojiId')
 						.setLabel("Emoji ID")
+                        .setRequired(false)
 						.setValue(`${user.eId}`)
 						.setPlaceholder(`${user.eId}`)
 						.setStyle(TextInputStyle.Short)
@@ -173,17 +174,17 @@ client?.on("interactionCreate", async (interaction) => {
             if (interaction.customId === "addmodal") {
                 const rolName = interaction.fields.getTextInputValue('rolname')
                 const color = interaction.fields.getTextInputValue('color')
-                const emojiId = interaction.fields.getTextInputValue('emojiId')
+                const emojiId = interaction.fields.getTextInputValue('emojiId') || undefined
                 const hashtag = color.startsWith('#')
                 if(!hashtag) return await interaction.reply('Renk ataması yaparken lütfen başına # koyup, renk kodunuz giriniz.')
-                
+                const isIcon = emojiId ? `https://cdn.discordapp.com/emojis/${emojiId}.png?size=96&quality=lossless` : undefined
                 const user = await User.findOne({userID: interaction.user.id})
                 
                 if(user?.limit) return await interaction.reply('Rolünüz zaten var!')
                 const role = await interaction.guild.roles.create({
                     name: rolName,
                     color: color,
-                    icon: `https://cdn.discordapp.com/emojis/${emojiId}.png?size=96&quality=lossless`
+                    icon: isIcon
                 })
                 if(user){
                     user.role = interaction.user.id
@@ -208,11 +209,12 @@ client?.on("interactionCreate", async (interaction) => {
                 const user = await User.findOne({userID: interaction.user.id})
                 const uRole = interaction.guild.roles.cache.get(user.role)
                 const convertColor = color.startsWith('#') ? color : Number(color)
-                
+                const isIcon = emojiId ? `https://cdn.discordapp.com/emojis/${emojiId}.png?size=96&quality=lossless` : undefined
+
                 await uRole.edit({
                     name: rolName,
                     color: convertColor,
-                    icon: `https://cdn.discordapp.com/emojis/${emojiId}.png?size=96&quality=lossless`
+                    icon: isIcon
                 })
                 user.eId = emojiId
                 await user.save()
