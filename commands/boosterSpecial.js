@@ -1,11 +1,11 @@
 const { SlashCommandBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder, 
     ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js')
-
+var client;
 const User = require('../models/User')
 const { messageSender } = require('../helpers/messageSender')
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('boosterSpecial')
+        .setName('boosterspecial')
         .setDescription('Boosterlara özel rol'),
     async execute(interaction) {
     
@@ -165,7 +165,7 @@ module.exports = {
     },
 }
 
-client.on("interactionCreate", async (interaction) => {
+client?.on("interactionCreate", async (interaction) => {
     if(interaction.isModalSubmit()){
         const member = await interaction.guild.members.fetch(interaction.user.id)
         const isBooster = member.roles.cache.some(role => role.tags && role.tags.premiumSubscriberRole)

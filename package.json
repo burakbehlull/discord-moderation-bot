@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "bot": "node index.js",
     "deploy": "node deploy-commands.js"
   },
   "keywords": [],

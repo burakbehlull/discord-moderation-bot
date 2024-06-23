@@ -22,4 +22,8 @@ MONGO_URI =
 ### contents:
 | command | comment | situation |
 | ------ | ------ | ------ |
-| **specialBooster** |  Those who boost the server will be given a special role opening and management panel. | stable |
+| **specialbooster** |  Those who boost the server will be given a special role opening and management panel. | stable |
+
+| feature | comment | situation |
+| ------ | ------ | ------ |
+| **Room creation command** |  When you press the specified sound channel, it creates a sound channel underneath and the room belongs only to the person who created the channel. | stable |
