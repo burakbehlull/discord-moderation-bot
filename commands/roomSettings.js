@@ -23,20 +23,27 @@ module.exports = {
             .setStyle(ButtonStyle.Secondary)
         const addUserBtn = new ButtonBuilder()
             .setCustomId('adduserbtn')
-            .setLabel('add user')
+            .setLabel('add')
             .setStyle(ButtonStyle.Primary)
         const deleteUserBtn = new ButtonBuilder()
             .setCustomId('deleteuserbtn')
-            .setLabel('delete user')
-            .setStyle(ButtonStyle.Primary)
+            .setLabel('remove')
+            .setStyle(ButtonStyle.Danger)
+        const kickUserBtn = new ButtonBuilder()
+            .setCustomId('kickuserbtn')
+            .setLabel('kick')
+            .setStyle(ButtonStyle.Danger)
         const deleteBtn = new ButtonBuilder()
             .setCustomId('roomdeletebtn')
             .setLabel('delete')
             .setStyle(ButtonStyle.Danger)
         
         const action =  new ActionRowBuilder()
-            .addComponents(nameBtn, limitBtn, lockBtn,addUserBtn, deleteUserBtn, deleteBtn)
-        await interaction.reply({content: 'Room Settings', components: [action]})
+            .addComponents(nameBtn, limitBtn, lockBtn,addUserBtn)
+        const action2 = new ActionRowBuilder()
+            .addComponents(deleteUserBtn, kickUserBtn, deleteBtn)
+        
+        await interaction.reply({content: 'Room Settings', components: [action, action2]})
 
         const filter = i => i.user.id === interaction.user.id;
         const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
@@ -118,6 +125,21 @@ module.exports = {
                 return await interaction.showModal(deleteUserModal)
 
             }
+            if(interaction.customId=="kickuserbtn"){
+                const kickUserModal = new ModalBuilder()
+                .setCustomId('kickuserModal')
+                .setTitle('Atılacak Kullanıcı Id')
+    
+                const kickUserId = new TextInputBuilder()
+                    .setCustomId('kickuserid')
+                    .setLabel('Kullanıcı Id')
+                    .setPlaceholder(`user id`)
+                    .setStyle(TextInputStyle.Short)
+                const kickUserAction = new ActionRowBuilder().addComponents(kickUserId)
+                kickUserModal.addComponents(kickUserAction)
+                return await interaction.showModal(kickUserModal)
+
+            }
             if(interaction.customId=="roomdeletebtn"){
                 const room = await Room.findOne({ownerId: interaction.user.id})
                 if(!room) await interaction.reply('Odanız yok!')
@@ -173,6 +195,7 @@ client?.on("interactionCreate", async (interaction) => {
                 Connect: true
             })
             return await interaction.reply(`<@${roomuserid}> kullanıcıya, ${c?.name} adlı odaya girme izni verildi.`)
+        
         }
         if(interaction.customId === "deleteuserModal"){
             const room = await Room.findOne({ownerId: interaction.user.id})
@@ -185,6 +208,17 @@ client?.on("interactionCreate", async (interaction) => {
                 Connect: false
             })
             return await interaction.reply(`<@${roomuserid}> kullanıcının, ${c?.name} adlı odaya girme izni alındı.`)
+        }
+        if(interaction.customId === "kickuserModal"){
+            const room = await Room.findOne({ownerId: interaction.user.id})
+            if(!room) await interaction.reply('Odanız yok!')
+            const c = await interaction.guild.channels.fetch(room?.id)
+            const kickuserid = interaction.fields.getTextInputValue('kickuserid')
+            if(!kickuserid) return
+            const user = await interaction.guild.members.fetch(kickuserid)
+            if (user?.voice.channelId !== c?.id) return await interaction.reply('Belirtilen kullanıcı bu kanalda değil.')
+            await user?.voice.setChannel(null);
+            return await interaction.reply(`<@${kickuserid}> kullanıcı, ${c?.name} adlı odadan atıldı!`)
         }
     }
 })
