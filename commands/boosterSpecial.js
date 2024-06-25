@@ -60,6 +60,7 @@ module.exports = {
 				const color = new TextInputBuilder()
 					.setCustomId('color')
 					.setLabel("Renk")
+                    .setRequired(false)
 					.setStyle(TextInputStyle.Short)
 				const emoji = new TextInputBuilder()
 					.setCustomId('emojiId')
@@ -95,6 +96,7 @@ module.exports = {
 						.setLabel("Renk")
 						.setValue(`${uRole.color}`)
 						.setPlaceholder(`${uRole.color}`)
+                        .setRequired(false)
 						.setStyle(TextInputStyle.Short)
 						
 					const emoji = new TextInputBuilder()
@@ -236,8 +238,6 @@ client?.on("interactionCreate", async (interaction) => {
                 return await interaction.reply(`<@${userId}> başarıyla role eklendi.`)
             }
             return;
-        } else {
-			return await interaction.reply('Bu komutu sadece Boosterlar kullanabilir.')
-		}
+        } else return
     }
 })

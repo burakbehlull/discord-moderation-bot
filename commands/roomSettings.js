@@ -17,13 +17,17 @@ module.exports = {
             .setCustomId('roomlimitbtn')
             .setLabel('limit')
             .setStyle(ButtonStyle.Secondary)
+        const lockBtn = new ButtonBuilder()
+            .setCustomId('roomlockbtn')
+            .setLabel('lock')
+            .setStyle(ButtonStyle.Secondary)
         const deleteBtn = new ButtonBuilder()
             .setCustomId('roomdeletebtn')
             .setLabel('delete')
             .setStyle(ButtonStyle.Danger)
         
         const action =  new ActionRowBuilder()
-            .addComponents(nameBtn, limitBtn, deleteBtn)
+            .addComponents(nameBtn, limitBtn, lockBtn, deleteBtn)
         await interaction.reply({content: 'Room Settings', components: [action]})
 
         const filter = i => i.user.id === interaction.user.id;
@@ -64,13 +68,26 @@ module.exports = {
         
                 return await interaction.showModal(limitModal)
             }
+            if(interaction.customId=="roomlockbtn"){
+                const room = await Room.findOne({ownerId: interaction.user.id})
+                if(!room) await interaction.reply('Odanız yok!')
+                const c = await interaction.guild.channels.fetch(room?.id)
+                await c.permissionOverwrites.edit(interaction.guild.roles.everyone, {
+                    Speak: false,
+                    Connect: false,
+                    ManageChannels: false,
+                    ManageRoles: false,
+                })
+                return await interaction.reply(`${c?.name} adlı oda kitlendi!`)
+            }
             if(interaction.customId=="roomdeletebtn"){
                 const room = await Room.findOne({ownerId: interaction.user.id})
                 if(!room) await interaction.reply('Odanız yok!')
                 const c = await interaction.guild.channels.fetch(room?.id)
                 await c?.delete()
                 await Room?.deleteOne({ownerId: interaction.user.id})
-                await interaction.reply(`${c?.name} adlı oda silindi!`)
+                return await interaction.reply(`${c?.name} adlı oda silindi!`)
+
             }
             
         })
