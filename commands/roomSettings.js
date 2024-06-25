@@ -24,14 +24,18 @@ module.exports = {
         const addUserBtn = new ButtonBuilder()
             .setCustomId('adduserbtn')
             .setLabel('add user')
-            .setStyle(ButtonStyle.Secondary)
+            .setStyle(ButtonStyle.Primary)
+        const deleteUserBtn = new ButtonBuilder()
+            .setCustomId('deleteuserbtn')
+            .setLabel('delete user')
+            .setStyle(ButtonStyle.Primary)
         const deleteBtn = new ButtonBuilder()
             .setCustomId('roomdeletebtn')
             .setLabel('delete')
             .setStyle(ButtonStyle.Danger)
         
         const action =  new ActionRowBuilder()
-            .addComponents(nameBtn, limitBtn, lockBtn,addUserBtn, deleteBtn)
+            .addComponents(nameBtn, limitBtn, lockBtn,addUserBtn, deleteUserBtn, deleteBtn)
         await interaction.reply({content: 'Room Settings', components: [action]})
 
         const filter = i => i.user.id === interaction.user.id;
@@ -99,6 +103,21 @@ module.exports = {
                 return await interaction.showModal(addUserModal)
 
             }
+            if(interaction.customId=="deleteuserbtn"){
+                const deleteUserModal = new ModalBuilder()
+                .setCustomId('deleteuserModal')
+                .setTitle('Kullanıcı Sil')
+    
+                const roomUserId = new TextInputBuilder()
+                    .setCustomId('roomuserid')
+                    .setLabel('Kullanıcı Id')
+                    .setPlaceholder(`user id`)
+                    .setStyle(TextInputStyle.Short)
+                const deleteUserAction = new ActionRowBuilder().addComponents(roomUserId)
+                deleteUserModal.addComponents(deleteUserAction)
+                return await interaction.showModal(deleteUserModal)
+
+            }
             if(interaction.customId=="roomdeletebtn"){
                 const room = await Room.findOne({ownerId: interaction.user.id})
                 if(!room) await interaction.reply('Odanız yok!')
@@ -154,6 +173,18 @@ client?.on("interactionCreate", async (interaction) => {
                 Connect: true
             })
             return await interaction.reply(`<@${roomuserid}> kullanıcıya, ${c?.name} adlı odaya girme izni verildi.`)
+        }
+        if(interaction.customId === "deleteuserModal"){
+            const room = await Room.findOne({ownerId: interaction.user.id})
+            if(!room) await interaction.reply('Odanız yok!')
+            const c = await interaction.guild.channels.fetch(room?.id)
+            const roomuserid = interaction.fields.getTextInputValue('roomuserid')
+            if(!roomuserid) return
+            const user = await interaction.guild.members.fetch(roomuserid);
+            await c.permissionOverwrites.edit(user, {
+                Connect: false
+            })
+            return await interaction.reply(`<@${roomuserid}> kullanıcının, ${c?.name} adlı odaya girme izni alındı.`)
         }
     }
 })
