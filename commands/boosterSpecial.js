@@ -185,7 +185,7 @@ client?.on("interactionCreate", async (interaction) => {
                 if(user?.limit) return await interaction.reply('Rolünüz zaten var!')
                 const role = await interaction.guild.roles.create({
                     name: rolName,
-                    color: color,
+                    color: color || undefined,
                     icon: isIcon
                 })
                 if(user){
@@ -215,7 +215,7 @@ client?.on("interactionCreate", async (interaction) => {
 
                 await uRole.edit({
                     name: rolName,
-                    color: convertColor,
+                    color: convertColor || undefined,
                     icon: isIcon
                 })
                 user.eId = emojiId

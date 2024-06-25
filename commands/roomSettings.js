@@ -2,6 +2,7 @@ const { SlashCommandBuilder, ButtonBuilder, ActionRowBuilder,
     ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle,
     ChannelType, PermissionsBitField } = require('discord.js')
 const Room = require('../models/Room')
+const { CreateRoomChannelId } = require('../config.json')
 module.exports = {
     data: new SlashCommandBuilder()
     .setName('roomsettings')
@@ -224,7 +225,8 @@ client?.on("interactionCreate", async (interaction) => {
 })
 
 client?.on('voiceStateUpdate', async (oldState, newState) => {
-    if (newState.channelId === "1254188045431869531") {
+    if(!CreateRoomChannelId) return
+    if (newState.channelId === CreateRoomChannelId) {
         const owner = await Room.findOne({ownerId: newState.member.id})
         if(owner) return await oldState.reply('Zaten bir odanız var!') 
         const cloneRoom = await newState?.channel?.clone({
