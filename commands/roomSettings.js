@@ -21,13 +21,17 @@ module.exports = {
             .setCustomId('roomlockbtn')
             .setLabel('lock')
             .setStyle(ButtonStyle.Secondary)
+        const addUserBtn = new ButtonBuilder()
+            .setCustomId('adduserbtn')
+            .setLabel('add user')
+            .setStyle(ButtonStyle.Secondary)
         const deleteBtn = new ButtonBuilder()
             .setCustomId('roomdeletebtn')
             .setLabel('delete')
             .setStyle(ButtonStyle.Danger)
         
         const action =  new ActionRowBuilder()
-            .addComponents(nameBtn, limitBtn, lockBtn, deleteBtn)
+            .addComponents(nameBtn, limitBtn, lockBtn,addUserBtn, deleteBtn)
         await interaction.reply({content: 'Room Settings', components: [action]})
 
         const filter = i => i.user.id === interaction.user.id;
@@ -80,6 +84,21 @@ module.exports = {
                 })
                 return await interaction.reply(`${c?.name} adlı oda kitlendi!`)
             }
+            if(interaction.customId=="adduserbtn"){
+                const addUserModal = new ModalBuilder()
+                .setCustomId('adduserModal')
+                .setTitle('Kullanıcı Ekle')
+    
+                const roomUserId = new TextInputBuilder()
+                    .setCustomId('roomuserid')
+                    .setLabel('Kullanıcı Id')
+                    .setPlaceholder(`user id`)
+                    .setStyle(TextInputStyle.Short)
+                const addUserAction = new ActionRowBuilder().addComponents(roomUserId)
+                addUserModal.addComponents(addUserAction)
+                return await interaction.showModal(addUserModal)
+
+            }
             if(interaction.customId=="roomdeletebtn"){
                 const room = await Room.findOne({ownerId: interaction.user.id})
                 if(!room) await interaction.reply('Odanız yok!')
@@ -123,6 +142,18 @@ client?.on("interactionCreate", async (interaction) => {
             if(!roomlimit) return
             await c?.edit({ userLimit: roomlimit })
             return await interaction.reply(`Oda limiti: ${roomlimit} olarak ayarlandı!`)
+        }
+        if(interaction.customId === "adduserModal"){
+            const room = await Room.findOne({ownerId: interaction.user.id})
+            if(!room) await interaction.reply('Odanız yok!')
+            const c = await interaction.guild.channels.fetch(room?.id)
+            const roomuserid = interaction.fields.getTextInputValue('roomuserid')
+            if(!roomuserid) return
+            const user = await interaction.guild.members.fetch(roomuserid);
+            await c.permissionOverwrites.edit(user, {
+                Connect: true
+            })
+            return await interaction.reply(`<@${roomuserid}> kullanıcıya, ${c?.name} adlı odaya girme izni verildi.`)
         }
     }
 })
