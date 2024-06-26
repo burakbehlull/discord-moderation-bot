@@ -42,133 +42,119 @@ module.exports = {
         const IEmbed = new EmbedBuilder(sender.embed({title: 'BOOSTERLARA ÖZEL ROL'}))
             .setDescription('ÖZEL ROL SEÇENEKLERİ')
         await interaction.reply({ embeds: [IEmbed], components: [action] })
-    
-        const filter = i => i.user.id === userId;
-        const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
-    
-        collector.on('collect', async interaction => {
-            if (interaction.customId === 'tocreate') {
-				const modal = new ModalBuilder()
-					.setCustomId('addmodal')
-					.setTitle('Rol Ekle')
-		
-				const rolname = new TextInputBuilder()
-					.setCustomId('rolname')
-					.setLabel("Rol adı")
-					.setStyle(TextInputStyle.Short)
-		
-				const color = new TextInputBuilder()
-					.setCustomId('color')
-					.setLabel("Renk")
-                    .setRequired(false)
-					.setStyle(TextInputStyle.Short)
-				const emoji = new TextInputBuilder()
-					.setCustomId('emojiId')
-					.setLabel("Emoji ID")
-                    .setRequired(false)
-					.setStyle(TextInputStyle.Short)
-		
-				const rolnameAction = new ActionRowBuilder().addComponents(rolname)
-				const colorAction = new ActionRowBuilder().addComponents(color)
-				const emojiAction = new ActionRowBuilder().addComponents(emoji)
-
-				modal.addComponents(rolnameAction, colorAction, emojiAction)
-	
-				return await interaction.showModal(modal)
-			}
-			if (interaction.customId === 'toedit') {
-				const user = await User.findOne({userID: interaction.user.id})
-				const uRole = interaction.guild.roles.cache.get(user?.role)
-				if(user?.limit){
-					const editModal = new ModalBuilder()
-					.setCustomId('editmodal')
-					.setTitle('Rol Düzenle')
-		
-					const rolname = new TextInputBuilder()
-						.setCustomId('rolname')
-						.setLabel('Rol adı')
-						.setValue(`${uRole.name}`)
-						.setPlaceholder(`${uRole.name}`)
-						.setStyle(TextInputStyle.Short)
-			
-					const color = new TextInputBuilder()
-						.setCustomId('color')
-						.setLabel("Renk")
-						.setValue(`${uRole.color}`)
-						.setPlaceholder(`${uRole.color}`)
-                        .setRequired(false)
-						.setStyle(TextInputStyle.Short)
-						
-					const emoji = new TextInputBuilder()
-						.setCustomId('emojiId')
-						.setLabel("Emoji ID")
-                        .setRequired(false)
-						.setValue(`${user.eId}`)
-						.setPlaceholder(`${user.eId}`)
-						.setStyle(TextInputStyle.Short)
-			
-					const rolnameAction = new ActionRowBuilder().addComponents(rolname)
-					const colorAction = new ActionRowBuilder().addComponents(color)
-					const emojiAction = new ActionRowBuilder().addComponents(emoji)
-					editModal.addComponents(rolnameAction, colorAction, emojiAction)
-			
-					
-					return await interaction.showModal(editModal)
-				}
-				return await interaction.reply('Üstünüze kayıtlı rol yok.')
-
-			}
-            if (interaction.customId === 'touseradd') {
-				const user = await User.findOne({userID: interaction.user.id})
-				const uRole = interaction.guild.roles.cache.get(user?.role)
-				if(user?.limit){
-					const useraddModal = new ModalBuilder()
-					.setCustomId('useraddModal')
-					.setTitle('Role Kişi Ekle')
-		
-					const chosenUserId = new TextInputBuilder()
-						.setCustomId('chosenUserId')
-						.setLabel('Kullanıcı ID')
-						.setPlaceholder(`Ekleyeceğiniz kullanıcının id'sini giriniz.`)
-						.setStyle(TextInputStyle.Short)
-			
-					const chosenUserIdAction = new ActionRowBuilder().addComponents(chosenUserId)
-					useraddModal.addComponents(chosenUserIdAction)
-			
-					
-					return await interaction.showModal(useraddModal)
-				}
-				await interaction.reply('Rolünüz yok.')
-			}
-			if (interaction.customId === 'todelete') {
-				const user = await User.findOne({userID: interaction.user.id})
-				const uRole = interaction.guild.roles.cache.get(user.role)
-				if(!user){
-					return interaction.reply('Üstünüze kayıtlı rol yok.')
-				}
-				if (!uRole) {
-					return interaction.reply('Rol bulunamadı.')
-				}
-				uRole.delete()
-				user.limit = false
-				await user.save()
-				return await interaction.reply('Rol Silindi')
-			}
-        })
-    
-        collector.on('end', async collected => {
-            if (collected.size === 0) {
-                await interaction.editReply({
-                    content: '1 dakika içinde herhangi bir eylem alınmadığı için işlem iptal edildi.',
-                    components: []
-                })
-            }
-        })
-
     },
 }
 
 client?.on("interactionCreate", async (interaction) => {
+    if(interaction.isButton()){
+        if (interaction.customId === 'tocreate') {
+            const modal = new ModalBuilder()
+                .setCustomId('addmodal')
+                .setTitle('Rol Ekle')
+    
+            const rolname = new TextInputBuilder()
+                .setCustomId('rolname')
+                .setLabel("Rol adı")
+                .setStyle(TextInputStyle.Short)
+    
+            const color = new TextInputBuilder()
+                .setCustomId('color')
+                .setLabel("Renk")
+                .setRequired(false)
+                .setStyle(TextInputStyle.Short)
+            const emoji = new TextInputBuilder()
+                .setCustomId('emojiId')
+                .setLabel("Emoji ID")
+                .setRequired(false)
+                .setStyle(TextInputStyle.Short)
+    
+            const rolnameAction = new ActionRowBuilder().addComponents(rolname)
+            const colorAction = new ActionRowBuilder().addComponents(color)
+            const emojiAction = new ActionRowBuilder().addComponents(emoji)
+
+            modal.addComponents(rolnameAction, colorAction, emojiAction)
+
+            return await interaction.showModal(modal)
+        }
+        if (interaction.customId === 'toedit') {
+            const user = await User.findOne({userID: interaction.user.id})
+            const uRole = interaction.guild.roles.cache.get(user?.role)
+            if(user?.limit){
+                const editModal = new ModalBuilder()
+                .setCustomId('editmodal')
+                .setTitle('Rol Düzenle')
+    
+                const rolname = new TextInputBuilder()
+                    .setCustomId('rolname')
+                    .setLabel('Rol adı')
+                    .setValue(`${uRole.name}`)
+                    .setPlaceholder(`${uRole.name}`)
+                    .setStyle(TextInputStyle.Short)
+        
+                const color = new TextInputBuilder()
+                    .setCustomId('color')
+                    .setLabel("Renk")
+                    .setValue(`${uRole.color}`)
+                    .setPlaceholder(`${uRole.color}`)
+                    .setRequired(false)
+                    .setStyle(TextInputStyle.Short)
+                    
+                const emoji = new TextInputBuilder()
+                    .setCustomId('emojiId')
+                    .setLabel("Emoji ID")
+                    .setRequired(false)
+                    .setValue(`${user.eId}`)
+                    .setPlaceholder(`${user.eId}`)
+                    .setStyle(TextInputStyle.Short)
+        
+                const rolnameAction = new ActionRowBuilder().addComponents(rolname)
+                const colorAction = new ActionRowBuilder().addComponents(color)
+                const emojiAction = new ActionRowBuilder().addComponents(emoji)
+                editModal.addComponents(rolnameAction, colorAction, emojiAction)
+        
+                
+                return await interaction.showModal(editModal)
+            }
+            return await interaction.reply('Üstünüze kayıtlı rol yok.')
+
+        }
+        if (interaction.customId === 'touseradd') {
+            const user = await User.findOne({userID: interaction.user.id})
+            const uRole = interaction.guild.roles.cache.get(user?.role)
+            if(user?.limit){
+                const useraddModal = new ModalBuilder()
+                .setCustomId('useraddModal')
+                .setTitle('Role Kişi Ekle')
+    
+                const chosenUserId = new TextInputBuilder()
+                    .setCustomId('chosenUserId')
+                    .setLabel('Kullanıcı ID')
+                    .setPlaceholder(`Ekleyeceğiniz kullanıcının id'sini giriniz.`)
+                    .setStyle(TextInputStyle.Short)
+        
+                const chosenUserIdAction = new ActionRowBuilder().addComponents(chosenUserId)
+                useraddModal.addComponents(chosenUserIdAction)
+        
+                
+                return await interaction.showModal(useraddModal)
+            }
+            await interaction.reply('Rolünüz yok.')
+        }
+        if (interaction.customId === 'todelete') {
+            const user = await User.findOne({userID: interaction.user.id})
+            const uRole = interaction.guild.roles.cache.get(user.role)
+            if(!user){
+                return interaction.reply('Üstünüze kayıtlı rol yok.')
+            }
+            if (!uRole) {
+                return interaction.reply('Rol bulunamadı.')
+            }
+            uRole.delete()
+            user.limit = false
+            await user.save()
+            return await interaction.reply('Rol Silindi')
+        }
+    }
     if(interaction.isModalSubmit()){
         const member = await interaction.guild.members.fetch(interaction.user.id)
         const isBooster = member.roles.cache.some(role => role.tags && role.tags.premiumSubscriberRole)

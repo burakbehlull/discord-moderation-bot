@@ -63,7 +63,6 @@ client.on('ready', () => {
 })
 
 
-
 db()
 client.login(process.env.TOKEN)
 .then(()=>console.log('Token girişi başarılı'))
