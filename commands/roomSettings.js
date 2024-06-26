@@ -153,7 +153,7 @@ client?.on("interactionCreate", async (interaction) => {
                 ManageChannels: false,
                 ManageRoles: false,
             })
-            return await interaction.reply(`${c?.name} adlı oda kitlendi!`)
+            return await c?.send(`${c?.name} adlı oda kitlendi!`)
         }
         if(interaction.customId=="adduserbtn"){
             const addUserModal = new ModalBuilder()
@@ -212,10 +212,11 @@ client?.on("interactionCreate", async (interaction) => {
 })
 
 client?.on('voiceStateUpdate', async (oldState, newState) => {
+    console.log(oldState)
     if(!CreateRoomChannelId) return
     if (newState.channelId === CreateRoomChannelId) {
         const owner = await Room.findOne({ownerId: newState.member.id})
-        if(owner) return await oldState.reply('Zaten bir odanız var!') 
+        if(owner) return
         const cloneRoom = await newState?.channel?.clone({
             name: newState.member.displayName,
             type: ChannelType.GuildVoice,

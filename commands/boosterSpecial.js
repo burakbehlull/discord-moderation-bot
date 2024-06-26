@@ -9,7 +9,7 @@ module.exports = {
     async execute(interaction) {
         const sender = new messageSender(interaction)
         const emoji = "<:kelepce:1000432684499218573>"
-    
+
         const roleCreateBtn = new ButtonBuilder()
             .setCustomId('tocreate')
             .setLabel('Rol Oluştur')
