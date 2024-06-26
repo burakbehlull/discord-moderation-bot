@@ -7,8 +7,6 @@ module.exports = {
         .setName('boosterspecial')
         .setDescription('Boosterlara özel rol'),
     async execute(interaction) {
-    
-        const userId = await interaction.user.id;
         const sender = new messageSender(interaction)
         const emoji = "<:kelepce:1000432684499218573>"
     
