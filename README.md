@@ -24,7 +24,6 @@ MONGO_URI =
 | ------ | ------ | ------ |
 | **specialbooster** |  Those who boost the server will be given a special role opening and management panel. | stable |
 | **roomsettings** |  Control panel for the created room | incomplete but stable |
-
-| feature | comment | situation |
-| ------ | ------ | ------ |
-| **Room creation command** |  When you press the specified sound channel, it creates a sound channel underneath and the room belongs only to the person who created the channel. | stable |
+| **ban** |  ban the user | stable |
+| **unban** |  unban the user | stable |
+| **kick** |  kick the user | stable |
