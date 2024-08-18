@@ -26,12 +26,15 @@ module.exports = {
         
         await user.ban({
             reason
-        }).then(()=> {})
-        .catch(err=> {
+        }).then(async ()=> {
+            await interaction.reply('Kullanıcı banlandı!')
+            return;
+        })
+        .catch(async(err)=> {
             console.log(err)
+            await interaction.reply('Kullanıcı banlanırken hata oluştu!')
             return;
         })
 
-        await interaction.reply('Kullanıcı banlandı!')
     }
 }

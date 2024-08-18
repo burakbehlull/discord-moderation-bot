@@ -4,9 +4,9 @@ module.exports = {
     data: new SlashCommandBuilder()
     .setName('unban')
     .setDescription('Etiketlediğiniz kullanıcının banını kaldırır')
-    .addUserOption(option=> 
+    .addStringOption(option=> 
         option
-        .setName('user')
+        .setName('userId')
         .setDescription('Banı kalkacak kullanıcı')
         .setRequired(true)
     )
@@ -17,20 +17,25 @@ module.exports = {
         .setRequired(false)
     ),
     async execute(interaction){
-        const fetchUser = interaction.options.getUser('user')
+        const userId = interaction.options.getString('userId')
         const reason = interaction.options.getString('reason') ?? " "
-        const user =  await interaction.guild.members.fetch(fetchUser.id)
+
+        if(!userId) return await interaction.reply("Kullanıcı Id'si belirtiniz.")
+
+        const user =  await interaction.guild.members.fetch(userId)
 
         if(!user) return await interaction.reply('Kullanıcı bulunamadı!')
         
         await user.kick({
             reason
-        }).then(()=> {})
-        .catch(err=> {
+        }).then(async()=> {
+            await interaction.reply('Kullanıcı kicklendi!')
+            return;
+        }).catch(async(err)=> {
             console.log(err)
+            await interaction.reply('Kullanıcının banı açılırken hata oluştu!')
             return;
         })
 
-        await interaction.reply('Kullanıcı kicklendi!')
     }
 }

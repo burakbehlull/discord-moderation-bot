@@ -25,9 +25,13 @@ module.exports = {
         
         await user.kick({
             reason
-        }).then(()=> {})
-        .catch(err=> {
-            console.log(err)
+        }).then(async()=> {
+            await interaction.reply('Kullanıcı kicklendi!')
+            return;
+        })
+        .catch(async(err)=> {
+            console.log(err)        
+            await interaction.reply('Kullanıcı kicklenirken hata oluştu!')
             return;
         })
 
