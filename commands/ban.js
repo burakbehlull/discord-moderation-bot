@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js')
+const { PermissionsManager } = require('../managers/index')
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -18,9 +19,18 @@ module.exports = {
         .setRequired(false)
     ),
     async execute(interaction){
+        const PM = new PermissionsManager(interaction)
+
         const fetchUser = interaction.options.getUser('user')
         const reason = interaction.options.getString('reason') ?? " "
         const user =  await interaction.guild.members.fetch(fetchUser.id)
+
+        const IsOwner = await PM.isOwner()
+        const IsRoles = await PM.isRoles()
+
+		if(!IsOwner || !IsRoles){
+			await interaction.reply("Yetersiz yetki!")
+		}
 
         if(!user) return await interaction.reply('Kullanıcı bulunamadı!')
         

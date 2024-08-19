@@ -23,12 +23,11 @@ module.exports = {
         const reason = interaction.options.getString('reason') ?? " "
         const user =  await interaction.guild.members.fetch(fetchUser.id)
         
-        const o = await PM.isOwner()
-        const r = await PM.isRoles()
-		console.log(o)
-		console.log("r", r)
-		if(!r){
-			await interaction.reply("yetersiz yetki")
+        const IsOwner = await PM.isOwner()
+        const IsRoles = await PM.isRoles()
+
+		if(!IsOwner || !IsRoles){
+			await interaction.reply("Yetersiz yetki!")
 		}
 
         if(!user) return await interaction.reply('Kullanıcı bulunamadı!')
