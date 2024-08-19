@@ -1,9 +1,9 @@
 {
     "CreateRoomChannelId": "1254188045431869531",
     "permissions": {
-        "isRole": false,
+        "isRole": true,
         "isOwners": false,
-        "roles": [],
+        "roles": ["875017622469623890"],
         "owners": []
 
     }

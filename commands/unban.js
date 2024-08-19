@@ -6,7 +6,7 @@ module.exports = {
     .setDescription('Etiketlediğiniz kullanıcının banını kaldırır')
     .addStringOption(option=> 
         option
-        .setName('userId')
+        .setName('userid')
         .setDescription('Banı kalkacak kullanıcı')
         .setRequired(true)
     )
@@ -17,7 +17,7 @@ module.exports = {
         .setRequired(false)
     ),
     async execute(interaction){
-        const userId = interaction.options.getString('userId')
+        const userId = interaction.options.getString('userid')
         const reason = interaction.options.getString('reason') ?? " "
 
         if(!userId) return await interaction.reply("Kullanıcı Id'si belirtiniz.")

@@ -9,7 +9,7 @@ class PermissionsManager {
         this.interaction = interaction
     }
     async isOwner(){
-        const userId = interaction.user.id
+        const userId = this.interaction.user.id
         const { owners, isOwners } = permissions
         if(isOwners){
             return owners.includes(userId)
@@ -19,14 +19,19 @@ class PermissionsManager {
         const userId = await this.interaction.user.id
         const member = this.interaction.guild.members.cache.get(userId)
         const { roles, isRole } = permissions
-        if(isRole){
-            return roles.forEach(async (role, i)=>{
-                let hasRole = await member.roles.cache.has(role)
-                if(hasRole){
-                    return true
-                }
-            })
-        }
+		if (isRole) {
+			let statusPromises = roles.map(async (role) => {
+				let hasRole = await member.roles.cache.has(role)
+				return hasRole
+			})
+
+			let status = await Promise.all(statusPromises)
+
+			let hasRoleStatus = status.includes(true)
+
+			return hasRoleStatus
+		}
+
     }
 }
 

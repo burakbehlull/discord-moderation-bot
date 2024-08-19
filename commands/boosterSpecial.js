@@ -2,6 +2,7 @@ const { SlashCommandBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, Embed
     ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js')
 const User = require('../models/User')
 const { messageSender } = require('../helpers/messageSender')
+
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('boosterspecial')
