@@ -26,7 +26,12 @@ module.exports = {
             .setLabel('Role Kullanıcı Ekle')
             .setStyle(ButtonStyle.Primary)
             .setEmoji(emoji)
-    
+        const roleShow = new ButtonBuilder()
+            .setCustomId('toshowrole')
+            .setLabel('Rolü Görüntüle')
+            .setStyle(ButtonStyle.Secondary)
+            .setEmoji(emoji)
+
         const roleDeleteBtn = new ButtonBuilder()
             .setCustomId('todelete')
             .setLabel('Rolü Sil')
@@ -34,7 +39,7 @@ module.exports = {
             .setEmoji(emoji)
     
         const action = new ActionRowBuilder()
-            .addComponents(roleCreateBtn, roleEditBtn, roleAddUserBtn, roleDeleteBtn)
+            .addComponents(roleCreateBtn, roleEditBtn, roleAddUserBtn, roleShow, roleDeleteBtn)
     
         const IEmbed = new EmbedBuilder(sender.embed({title: 'BOOSTERLARA ÖZEL ROL'}))
             .setDescription('ÖZEL ROL SEÇENEKLERİ')

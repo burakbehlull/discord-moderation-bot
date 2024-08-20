@@ -4,7 +4,6 @@ const fs = require('fs')
 require('dotenv').config()
 
 const db = require('./config/db')
-const Room = require('./models/Room')
 
 var client = (global.client = new Client({
     intents: [

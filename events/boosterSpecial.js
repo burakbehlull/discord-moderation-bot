@@ -1,11 +1,12 @@
-const { Events, ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js')
+const { Events, ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, EmbedBuilder } = require('discord.js')
 
 const User = require('../models/User')
+const { messageSender } = require('../helpers/messageSender')
 
 module.exports = {
 	name: Events.InteractionCreate,
 	async execute(interaction) {
-
+		const sender = new messageSender(interaction)
 		if(interaction.isButton()){
 			if (interaction.customId === 'tocreate') {
 				const modal = new ModalBuilder()
@@ -103,6 +104,33 @@ module.exports = {
 				}
 				await interaction.reply('Rolünüz yok.')
 			}
+			
+			if (interaction.customId === 'toshowrole') {
+				const user = await User.findOne({userID: interaction.user.id})
+				if(!user){
+					return interaction.reply('Üstünüze kayıtlı rol yok.')
+				}
+
+				const uRole = interaction.guild.roles.cache.get(user?.role)
+				if (!uRole) {
+					return interaction.reply('Rol bulunamadı.')
+				}
+				
+				const embed = new EmbedBuilder(sender.embed({
+					title: 'Rol Bilgisi',
+					footer: { text: interaction.user.displayName, iconURL: interaction.user.avatarURL()}
+				}))
+					.setDescription(`
+						**Rol**: ${uRole}
+						**Rol sahibi**: <@${user.userID}>
+						**Role sahip üyeler**: ${user?.hasRole.map((user)=>{
+							return `<@${user}>`
+						})}
+						`)
+	
+				return await interaction.reply({ embeds: [embed] })
+			}
+
 			if (interaction.customId === 'todelete') {
 				const user = await User.findOne({userID: interaction.user.id})
 				if(!user){
