@@ -3,8 +3,8 @@ const { PermissionsManager } = require('../managers/index')
 
 module.exports = {
     data: new SlashCommandBuilder()
-    .setName('ban')
-    .setDescription('Etiketlediğiniz kullanıcıyı banlar')
+    .setName('rolver')
+    .setDescription('Kullanıcıya rol verir.')
     .addUserOption(option=> 
         option
         .setName('user')
