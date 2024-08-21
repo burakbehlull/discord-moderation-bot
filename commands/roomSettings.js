@@ -8,7 +8,11 @@ module.exports = {
     .setDescription('Room Settings'),
 
     async execute(interaction){    
-        await interaction.reply({content: 'Private Room Settings', components: RoomButtons()})
+        try {
+            await interaction.reply({content: 'Private Room Settings', components: RoomButtons()})
+        } catch (error) {
+            console.log('Hata: ', error.message)
+        }
     }
 }
 
