@@ -28,13 +28,11 @@ module.exports = {
     
             const user =  await interaction.guild.members.fetch(userId)
     
-            const IsOwner = await PM.isOwner()
             const IsRoles = await PM.isRoles()
-    
-            if(!IsOwner || !IsRoles){
-                await interaction.reply("Yetersiz yetki!")
-                return
-            }
+            const IsOwner = await PM.isOwner()
+            if(PM.permissions.isRole && !IsRoles) return await interaction.reply("Yetersiz yetki!")
+            if(PM.permissions.isOwners && !IsOwner) return await interaction.reply("Yetersiz yetki!")
+            
     
             if(!user) return await interaction.reply('Kullanıcı bulunamadı!')
             

@@ -36,11 +36,10 @@ module.exports = {
             if(isUserHasRole) return await interaction.reply('Kullanıcı zaten bu role sahip!')
             
     
-            const IsOwner = await PM.isOwner()
             const IsRoles = await PM.isRoles()
-    
-            if(!IsOwner || !IsRoles) return await interaction.reply("Yetersiz yetki!")
-    
+            const IsOwner = await PM.isOwner()
+            if(PM.permissions.isRole && !IsRoles) return await interaction.reply("Yetersiz yetki!")
+            if(PM.permissions.isOwners && !IsOwner) return await interaction.reply("Yetersiz yetki!")
             
             await user.roles?.add(role)
             return await interaction.reply('Rol başarıyla eklendi.')
