@@ -3,12 +3,12 @@ const { PermissionsManager } = require('../managers/index')
 
 module.exports = {
     data: new SlashCommandBuilder()
-    .setName('rolver')
-    .setDescription('Kullanıcıya rol verir.')
+    .setName('rolal')
+    .setDescription('Kullanıcının rolünü alır')
     .addUserOption(option=> 
         option
         .setName('user')
-        .setDescription('Rol verilecek kullanıcı')
+        .setDescription('Rolü alınacak kullanıcı')
         .setRequired(true)
 
     )
@@ -41,8 +41,8 @@ module.exports = {
             if(PM.permissions.isRole && !IsRoles) return await interaction.reply("Yetersiz yetki!")
             if(PM.permissions.isOwners && !IsOwner) return await interaction.reply("Yetersiz yetki!")
             
-            await user.roles?.add(role)
-            return await interaction.reply('Rol başarıyla eklendi.')
+            await user.roles?.remove(role)
+            return await interaction.reply('Rol başarıyla alındı.')
         } catch (error) {
             console.log('Hata: ', error.message)
         }

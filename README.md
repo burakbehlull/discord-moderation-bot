@@ -27,3 +27,5 @@ MONGO_URI =
 | **ban** |  ban the user | stable |
 | **unban** |  unban the user | stable |
 | **kick** |  kick the user | stable |
+| **rolver** |  Gives the user a role | stable |
+| **rolal** |  Removes the user a role | stable |
