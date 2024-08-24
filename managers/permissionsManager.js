@@ -1,4 +1,5 @@
 const { permissions } = require('../config.json')
+const { PermissionsBitField } = require('discord.js')
 
 class PermissionsManager {
     constructor(interaction){
@@ -8,6 +9,7 @@ class PermissionsManager {
         }
         this.interaction = interaction
         this.permissions = permissions
+        this.flags = PermissionsBitField.Flags
     }
     async isOwner(){
         const userId = this.interaction.user.id
@@ -34,6 +36,19 @@ class PermissionsManager {
 			return hasRoleStatus
 		}
 
+    }
+    async isAuthority(...authorities){
+        if(this.permissions.isAuthority && authorities){
+            const member = this.interaction.member
+            authorities.map((authority)=> {
+                const isHasAuthority =  member.permissions.has(authority)
+                if(isHasAuthority){
+                    return true
+                }
+                return false
+            })
+
+        }
     }
 }
 

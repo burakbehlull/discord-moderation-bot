@@ -28,9 +28,10 @@ module.exports = {
     
             const IsRoles = await PM.isRoles()
             const IsOwner = await PM.isOwner()
-            if(PM.permissions.isRole && !IsRoles) return await interaction.reply("Yetersiz yetki!")
-            if(PM.permissions.isOwners && !IsOwner) return await interaction.reply("Yetersiz yetki!")
+            const IsAuthority = await PM.isAuthority(PM.flags.BanMembers, PM.flags.Administrator)
+            if(PM.permissions.isRole && !IsRoles || PM.permissions.isOwners && !IsOwner || PM.permissions.isAuthority && !IsAuthority) return await interaction.reply("Yetersiz yetki!")
             
+    
     
             if(!user) return await interaction.reply('Kullanıcı bulunamadı!')
             
