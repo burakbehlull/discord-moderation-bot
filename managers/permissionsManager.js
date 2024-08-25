@@ -50,6 +50,30 @@ class PermissionsManager {
 
         }
     }
+    async selectOwnerIds(status,...userIds){
+        const userId = this.interaction.user.id
+        const ids = userIds
+        if(status && userIds){
+            return ids.includes(userId)
+        }
+    }
+    async selectRolesIds(status, ...rolesIds){
+        const userId = await this.interaction.user.id
+        const member = this.interaction.guild.members.cache.get(userId)
+        const roles = rolesIds
+        if(status && roles){
+			let statusPromises = roles.map(async (role) => {
+				let hasRole = await member.roles.cache.has(role)
+				return hasRole
+			})
+
+			let statusAll = await Promise.all(statusPromises)
+
+			let hasRoleStatus = statusAll.includes(true)
+
+			return hasRoleStatus
+        }
+    }
 }
 
 module.exports = PermissionsManager
