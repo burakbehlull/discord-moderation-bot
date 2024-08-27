@@ -3,6 +3,7 @@ const { PermissionsManager } = require('../managers/index')
 
 module.exports = {
     data: new SlashCommandBuilder()
+    // Delete a role above a user
     .setName('rolal')
     .setDescription('Kullanıcının rolünü alır')
     .addUserOption(option=> 

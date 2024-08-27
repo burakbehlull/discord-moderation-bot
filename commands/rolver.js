@@ -3,6 +3,7 @@ const { PermissionsManager } = require('../managers/index')
 
 module.exports = {
     data: new SlashCommandBuilder()
+    // Give a Role
     .setName('rolver')
     .setDescription('Kullanıcıya rol verir.')
     .addUserOption(option=> 
