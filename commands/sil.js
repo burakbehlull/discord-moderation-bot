@@ -11,12 +11,15 @@ module.exports = {
         .setName('amount') // number of messages to be deleted
         .setDescription('Silenecek mesaj sayısı')
         .setRequired(true)
-
     ),
     async execute(interaction){
         const deleteCount = interaction.options.getInteger('amount')
+        const PM = new PermissionsManager(interaction)
 
         if (deleteCount < 1 || deleteCount > 100) return await interaction.reply('Lütfen 1 ile 100 arasında bir sayı belirtin.')
+
+        const IsAuthority = await PM.isAuthority(PM.flags.ManageMessages, PM.flags.Administrator)
+        if(PM.permissions.isAuthority && !IsAuthority) return await interaction.reply("Yetersiz yetki!")
         
         try {
             await interaction.channel.bulkDelete(deleteCount, true)
