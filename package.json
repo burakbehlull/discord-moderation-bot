@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "bot": "node index.js",
-    "deploy": "node deploy-commands.js"
+    "dev": "nodemon index",
+    "deploy": "node config/deploy-commands.js"
   },
   "keywords": [],
   "author": "Burak A. <burakyabgu@gmail.com>",
