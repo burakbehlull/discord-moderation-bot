@@ -32,3 +32,4 @@ MONGO_URI =
 | **sil** |  remove messages | stable |
 | **avatar** |  user avatar | stable |
 | **nuke** |  channel format | stable |
+| **snipe** |  get last message | stable |
