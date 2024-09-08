@@ -29,3 +29,5 @@ MONGO_URI =
 | **kick** |  kick the user | stable |
 | **rolver** |  Gives the user a role | stable |
 | **rolal** |  Removes the user a role | stable |
+| **sil** |  remove messages | stable |
+| **avatar** |  user avatar | stable |

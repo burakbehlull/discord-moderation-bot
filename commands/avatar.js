@@ -19,7 +19,8 @@ module.exports = {
             const embed = new EmbedBuilder(sender.embed({
                 title: 'Avatar',
                 footer: { text: user.displayName, iconURL: user.avatarURL()},
-            })).setImage(user.avatarURL())
+            })).setDescription(`**[PNG](${user.displayAvatarURL({ dynamic: true, size: 1024 }).replace("webp", "png")}) | [JPG](${user.displayAvatarURL({ dynamic: true, size: 1024 }).replace("webp", "jpg")}) | [WEBP](${user.displayAvatarURL({ dynamic: true, size: 1024 }).replace("webp", "webp")}) | [GIF](${user.displayAvatarURL({ dynamic: true, size: 1024 }).replace("webp", "gif")})**`)
+            .setImage(user.displayAvatarURL({ dynamic: true, size: 1024 }))
 
             return await interaction.reply({ embeds: [embed] })
         } catch (error) {
