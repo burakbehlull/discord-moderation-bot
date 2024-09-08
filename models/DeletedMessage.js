@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const deletedMessageSchema = new mongoose.Schema({
+const deletedMessageSchema = new Schema({
     messageContent: {
         type: String,
         required: true

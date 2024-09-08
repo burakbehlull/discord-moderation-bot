@@ -1,7 +1,8 @@
 const DeletedMessage = require('../models/DeletedMessage');
+const { Events } = require('discord.js');
 
 module.exports = {
-    name: 'messageDelete',
+    name: Events.MessageDelete,
     async execute(message, interaction) {
         try {
             if (message.author.bot) return
