@@ -1,16 +1,16 @@
 const { Events, EmbedBuilder } = require('discord.js')
-
+const { RandomPfpChannel, isRandomPfp } = require('../config.json')
 module.exports = {
     name: Events.UserUpdate,
     async execute(oldUser, newUser, interaction) {
         try {
-
+			if(!isRandomPfp) return
             function isGifAvatar(avatarUrl) {
                 return avatarUrl.includes('.gif');
             }
 
             const user = await interaction.users.fetch(oldUser.id)
-            const channel = await interaction.channels.cache.get("1282807498490908692")
+            const channel = await interaction.channels.cache.get(RandomPfpChannel)
             
             let avatar = user.displayAvatarURL({ dynamic: true, size: 1024 });
             if(oldUser===newUser) return

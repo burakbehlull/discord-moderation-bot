@@ -1,5 +1,7 @@
 {
     "CreateRoomChannelId": "1254188045431869531",
+	"isRandomPfp": false,
+    "RandomPfpChannel": "1282807498490908692",
     "permissions": {
         "isRole": false,
         "isOwners": false,
