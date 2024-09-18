@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js')
 const { PermissionsManager } = require('../../managers/index')
-const { Button } = require('../../helpers/components')
+const { Button, messageSender } = require('../../helpers/index')
 module.exports = {
     data: new SlashCommandBuilder()
     .setName('register')
@@ -14,11 +14,10 @@ module.exports = {
     ),
     async execute(interaction){
         try {
-            const btn = new Button()
-            btn.add('men', 'men', btn.style.Primary)
-            btn.add('woman', 'woman', btn.style.Danger)
-            const w = btn.build()
+            
+
             const PM = new PermissionsManager(interaction)
+            const sender = new messageSender(interaction)
 
             const fetchUser = interaction.options.getUser('user')
             const user =  await interaction.guild.members.fetch(fetchUser.id)
@@ -30,14 +29,18 @@ module.exports = {
             const IsAuthority = await PM.isAuthority(PM.flags.BanMembers, PM.flags.Administrator)
             if(PM.permissions.isRole && !IsRoles || PM.permissions.isOwners && !IsOwner || PM.permissions.isAuthority && !IsAuthority) return await interaction.reply("Yetersiz yetki!")
             
+            const btn = new Button()
+            btn.add('man', 'man', btn.style.Primary)
+            btn.add('woman', 'woman', btn.style.Danger)
+            const btns = btn.build()
             
-            const embed = new EmbedBuilder()
-                .setTitle('Register')
-                .setColor(0x0099FF)
-                .setDescription(`Kayıt için düğmeye basınız!`)
-                .setTimestamp()
-                .setFooter({ text: interaction.user.displayName, iconURL: interaction.user.avatarURL()})
-            interaction.reply({embeds: [embed], components: [w] })
+            const embed = new EmbedBuilder(sender.embed({
+                title: 'Register',
+                footer: { text: interaction.user.displayName, iconURL: interaction.user.avatarURL()},
+            }))
+            .setDescription(`Kayıt için düğmeye basınız!`)
+
+            await interaction.reply({embeds: [embed], components: [btns] })
             // codes
         } catch (error) {
             console.log('Hata: ', error.message)
