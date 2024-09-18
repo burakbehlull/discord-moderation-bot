@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js')
-const { PermissionsManager } = require('../managers/index')
+const { PermissionsManager } = require('../../managers/index')
 
 module.exports = {
     data: new SlashCommandBuilder()

@@ -1,15 +1,15 @@
 const { SlashCommandBuilder } = require('discord.js')
-const { PermissionsManager } = require('../managers/index')
+const { PermissionsManager } = require('../../managers/index')
 
 module.exports = {
     data: new SlashCommandBuilder()
-    // Give a Role
-    .setName('rolver')
-    .setDescription('Kullanıcıya rol verir.')
+    // Delete a role above a user
+    .setName('rolal')
+    .setDescription('Kullanıcının rolünü alır')
     .addUserOption(option=> 
         option
         .setName('user')
-        .setDescription('Rol verilecek kullanıcı')
+        .setDescription('Rolü alınacak kullanıcı')
         .setRequired(true)
 
     )
@@ -43,8 +43,8 @@ module.exports = {
             if(PM.permissions.isRole && !IsRoles || PM.permissions.isOwners && !IsOwner || PM.permissions.isAuthority && !IsAuthority) return await interaction.reply("Yetersiz yetki!")
             
     
-            await user.roles?.add(role)
-            return await interaction.reply('Rol başarıyla eklendi.')
+            await user.roles?.remove(role)
+            return await interaction.reply('Rol başarıyla alındı.')
         } catch (error) {
             console.log('Hata: ', error.message)
         }

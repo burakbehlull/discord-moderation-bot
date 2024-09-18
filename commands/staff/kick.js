@@ -1,36 +1,32 @@
 const { SlashCommandBuilder } = require('discord.js')
-const { PermissionsManager } = require('../managers/index')
-
+const { PermissionsManager } = require('../../managers/index')
 module.exports = {
     data: new SlashCommandBuilder()
-    .setName('unban')
-    .setDescription('Etiketlediğiniz kullanıcının banını kaldırır')
-    .addStringOption(option=> 
+    .setName('kick')
+    .setDescription('Etiketlediğiniz kullanıcıyı kickler')
+    .addUserOption(option=> 
         option
-        .setName('userid')
-        .setDescription('Banı kalkacak kullanıcı')
+        .setName('user')
+        .setDescription('Kicklenecek kullanıcı')
         .setRequired(true)
     )
     .addStringOption(option=>
         option
         .setName('reason')
-        .setDescription('Kalkacak unban açıklaması')
+        .setDescription('Kick açıklaması')
         .setRequired(false)
     ),
     async execute(interaction){
         try {
             const PM = new PermissionsManager(interaction)
 
-            const userId = interaction.options.getString('userid')
+            const fetchUser = interaction.options.getUser('user')
             const reason = interaction.options.getString('reason') ?? " "
-    
-            if(!userId) return await interaction.reply("Kullanıcı Id'si belirtiniz.")
-    
-            const user =  await interaction.guild.members.fetch(userId)
-    
+            const user =  await interaction.guild.members.fetch(fetchUser.id)
+            
             const IsRoles = await PM.isRoles()
             const IsOwner = await PM.isOwner()
-            const IsAuthority = await PM.isAuthority(PM.flags.BanMembers, PM.flags.Administrator)
+            const IsAuthority = await PM.isAuthority(PM.flags.KickMembers, PM.flags.Administrator)
             if(PM.permissions.isRole && !IsRoles || PM.permissions.isOwners && !IsOwner || PM.permissions.isAuthority && !IsAuthority) return await interaction.reply("Yetersiz yetki!")
             
     
@@ -41,14 +37,16 @@ module.exports = {
             }).then(async()=> {
                 await interaction.reply('Kullanıcı kicklendi!')
                 return;
-            }).catch(async(err)=> {
-                console.log(err)
-                await interaction.reply('Kullanıcının banı açılırken hata oluştu!')
+            })
+            .catch(async(err)=> {
+                console.log(err)        
+                await interaction.reply('Kullanıcı kicklenirken hata oluştu!')
                 return;
             })
+    
+            await interaction.reply('Kullanıcı kicklendi!')
         } catch (error) {
             console.log('Hata: ', error.message)
         }
-
     }
 }

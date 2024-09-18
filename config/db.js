@@ -7,4 +7,6 @@ function db(){
     return conn
 }
 
-module.exports = db
+module.exports = {
+    db
+}

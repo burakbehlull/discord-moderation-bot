@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js')
 
-const { RoomButtons } = require('../helpers/crumbs')
+const { RoomButtons } = require('../../helpers/crumbs')
 
 module.exports = {
     data: new SlashCommandBuilder()

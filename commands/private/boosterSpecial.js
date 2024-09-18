@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder } = require('discord.js')
-const { messageSender } = require('../helpers/messageSender')
+const { messageSender } = require('../../helpers/messageSender')
 
 module.exports = {
     data: new SlashCommandBuilder()
