@@ -1,3 +1,4 @@
+const { ActivityType } = require('discord.js')
 const path = require('path')
 const fs = require('fs')
 
@@ -10,7 +11,6 @@ class Base {
         const IPath = path.join(this.dir, target)
         return IPath
     }
-
     loadCommands(dir){
         try { 
             const files = fs.readdirSync(dir, { withFileTypes: true })
@@ -46,6 +46,19 @@ class Base {
             console.log(`${commandSize} tane komut başarıyla yüklendi.`)
         } catch (error) {
             console.log('Hata: ', error.message)
+        }
+    }
+    loadsEvents(dir){
+        const eventFiles = fs.readdirSync(dir).filter(file => file.endsWith('.js'))
+
+        for (const file of eventFiles) {
+            const filePath = path.join(dir, file)
+            const event = require(filePath)
+            if (event.once) {
+                client.once(event.name, (...args) => event.execute(...args, ActivityType))
+            } else {
+                client.on(event.name, (...args) => event.execute(...args, client))
+            }
         }
     }
 }
