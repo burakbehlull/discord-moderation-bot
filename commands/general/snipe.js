@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const DeletedMessage = require('../models/DeletedMessage');
+const DeletedMessage = require('../../models/DeletedMessage');
 
 module.exports = {
     data: new SlashCommandBuilder()

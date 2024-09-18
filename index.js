@@ -5,7 +5,6 @@ const { Base } = require('./helpers/base')
 require('dotenv').config()
 require('./config/db').db()
 
-
 var client = (global.client = new Client({
     intents: Object.keys(GatewayIntentBits).map((intent) => GatewayIntentBits[intent]),
 }))
@@ -13,7 +12,6 @@ var client = (global.client = new Client({
 client.commands = new Collection()
 
 const base = new Base(client, __dirname)
-
 
 base.loadCommands(base.setFileName('commands'))
 base.loadsEvents(base.setFileName('events'))

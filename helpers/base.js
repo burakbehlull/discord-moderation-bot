@@ -20,7 +20,6 @@ class Base {
                 const commandPath = path.join(dir, file.name)
                 const commandFile = require(commandPath)
                 commandsList.push(commandFile)
-                
             })
 
             files.filter((file)=> !file.name.endsWith('.js')).map(file => {
