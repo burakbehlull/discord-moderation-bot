@@ -1,8 +1,11 @@
 const { EmbedBuilder, AuditLogEvent } = require('discord.js')
+const config = require('../config.json')
+
 class messageSender {
     constructor(client){
         this.client = client
         this.audit = AuditLogEvent
+        this.config = config
         
     }
     embed({ title, color=0x0099FF,footer }){

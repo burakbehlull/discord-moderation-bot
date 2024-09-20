@@ -33,3 +33,4 @@ MONGO_URI =
 | **avatar** |  user avatar | stable |
 | **nuke** |  channel format | stable |
 | **snipe** |  get last message | stable |
+| **register** |  register user | stable |
