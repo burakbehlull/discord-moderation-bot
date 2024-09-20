@@ -34,9 +34,10 @@ class Modal {
             .setCustomId(customId)
             .setTitle(title)
     }
-    add(customId, label, value, props= {
+    add(customId, label, props= {
+        value:undefined,
         paragraph: false,
-        required: undefined,
+        required: false,
         placeholder: undefined, 
         max: undefined, 
         min: undefined,
@@ -45,16 +46,21 @@ class Modal {
         const input = new TextInputBuilder()
             .setCustomId(customId)
             .setLabel(label)
-        if(props?.paragraph){
+        if(props.paragraph){
             input.setStyle(TextInputStyle.Paragraph)
         } else {
             input.setStyle(TextInputStyle.Short)
         }
-        if(value) input.setValue(value)
-        if(props?.placeholder) input.setPlaceholder(placeholder)
-        if(props?.required) input.setRequired(required)
-        if(props?.max) input.setMaxLength(max)
-        if(props?.min) input.setMinLength(min)
+        if(props.value) input.setValue(props.value)
+        if(props.placeholder) input.setPlaceholder(props.placeholder)
+            
+        if(props.required){
+            input.setRequired(true) 
+        } else {
+            input.setRequired(false)
+        }
+        if(props.max) input.setMaxLength(props.max)
+        if(props.min) input.setMinLength(props.min)
         this.inputs.push(input)
         return;
     }

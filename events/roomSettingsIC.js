@@ -1,6 +1,8 @@
-const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, Events } = require('discord.js')
+const { Events } = require('discord.js')
 
 const Room = require('../models/Room')
+const { Modal } = require('../helpers/index')
+
 
 module.exports = {
 	name: Events.InteractionCreate,
@@ -9,20 +11,27 @@ module.exports = {
 			if(interaction.isModalSubmit()){
 				if(interaction.customId === "namemodal"){            
 					const room = await Room.findOne({ownerId: interaction.user.id})
+
 					if(!room) await interaction.reply('Odanız yok!')
+
 					const c = await interaction.guild.channels.fetch(room?.id)
 					const roomname = interaction.fields.getTextInputValue('roomname')
 					if(!roomname) return
+					
 					await c?.edit({ name: roomname })
 					
 					return await c?.send(`Oda adı: ${roomname} olarak ayarlandı!`)
 				}
 				if(interaction.customId === "limitmodal"){
 					const room = await Room.findOne({ownerId: interaction.user.id})
+
 					if(!room) await interaction.reply('Odanız yok!')
+
 					const c = await interaction.guild.channels.fetch(room?.id)
 					const roomlimit = interaction.fields.getTextInputValue('roomlimit')
+
 					if(!roomlimit) return
+
 					await c?.edit({ userLimit: roomlimit })
 					return await c?.send(`Oda limiti: ${roomlimit} olarak ayarlandı!`)
 				}
@@ -31,7 +40,9 @@ module.exports = {
 					if(!room) await interaction.reply('Odanız yok!')
 					const c = await interaction.guild.channels.fetch(room?.id)
 					const roomuserid = interaction.fields.getTextInputValue('roomuserid')
+
 					if(!roomuserid) return
+
 					const user = await interaction.guild.members.fetch(roomuserid);
 					await c.permissionOverwrites?.edit(user, {
 						Connect: true
@@ -44,7 +55,9 @@ module.exports = {
 					if(!room) await interaction.reply('Odanız yok!')
 					const c = await interaction.guild.channels.fetch(room?.id)
 					const roomuserid = interaction.fields.getTextInputValue('roomuserid')
+
 					if(!roomuserid) return
+
 					const user = await interaction.guild.members.fetch(roomuserid);
 					await c.permissionOverwrites?.edit(user, {
 						Connect: false
@@ -56,46 +69,35 @@ module.exports = {
 					if(!room) await interaction.reply('Odanız yok!')
 					const c = await interaction.guild.channels.fetch(room?.id)
 					const kickuserid = interaction.fields.getTextInputValue('kickuserid')
+
 					if(!kickuserid) return
+
 					const user = await interaction.guild.members.fetch(kickuserid)
 					if (user?.voice.channelId !== c?.id) return await c?.send('Belirtilen kullanıcı bu kanalda değil.')
 					await user?.voice.setChannel(null);
+					
 					return await c?.send(`<@${kickuserid}> kullanıcı, ${c?.name} adlı odadan atıldı!`)
 				}
 			}
 			if(interaction.isButton()){
+
 				if(interaction.customId=="roomnamebtn"){
-					const nameModal = new ModalBuilder()
-					.setCustomId('namemodal')
-					.setTitle('Oda Adı')
-		
-					const roomName = new TextInputBuilder()
-						.setCustomId('roomname')
-						.setLabel('Oda Adı')
-						.setPlaceholder(`room name`)
-						.setStyle(TextInputStyle.Short)
-					const nameAction = new ActionRowBuilder().addComponents(roomName)
-		
-					nameModal.addComponents(nameAction)
+					const modal = new Modal("namemodal", "Oda Adı")
+					modal.add('roomname', 'Oda Adı', {
+						placeholder: 'room name'
+					})
+					const action = modal.build()
 			
-					return await interaction.showModal(nameModal)
+					return await interaction.showModal(action)
 				}
 				if(interaction.customId=="roomlimitbtn"){
-					const limitModal = new ModalBuilder()
-						.setCustomId('limitmodal')
-						.setTitle('Oda Limiti')
+					const modal = new Modal("limitmodal", "Oda Adı")
+					modal.add('roomlimit', 'Oda Limiti', {
+						placeholder: 'room limit'
+					})
+					const action = modal.build()
 			
-					const roomLimit = new TextInputBuilder()
-						.setCustomId('roomlimit')
-						.setLabel('Oda Adı')
-						// .setValue(`${uRole.name}`)
-						.setPlaceholder(`room limit`)
-						.setStyle(TextInputStyle.Short)
-					const limitAction = new ActionRowBuilder().addComponents(roomLimit)
-		
-					limitModal.addComponents(limitAction)
-			
-					return await interaction.showModal(limitModal)
+					return await interaction.showModal(action)
 				}
 				if(interaction.customId=="roomlockbtn"){
 					const room = await Room.findOne({ownerId: interaction.user.id})
@@ -110,49 +112,33 @@ module.exports = {
 					return await c?.send(`${c?.name} adlı oda kitlendi!`)
 				}
 				if(interaction.customId=="adduserbtn"){
-					const addUserModal = new ModalBuilder()
-					.setCustomId('adduserModal')
-					.setTitle('Kullanıcı Ekle')
-		
-					const roomUserId = new TextInputBuilder()
-						.setCustomId('roomuserid')
-						.setLabel('Kullanıcı Id')
-						.setPlaceholder(`user id`)
-						.setStyle(TextInputStyle.Short)
-					const addUserAction = new ActionRowBuilder().addComponents(roomUserId)
-					addUserModal.addComponents(addUserAction)
-					return await interaction.showModal(addUserModal)
+
+					const modal = new Modal("adduserModal", "Kullanıcı Ekle")
+					modal.add('roomuserid', 'Kullanıcı Id', {
+						placeholder: 'user id'
+					})
+					const action = modal.build()
+
+					return await interaction.showModal(action)
 		
 				}
 				if(interaction.customId=="deleteuserbtn"){
-					const deleteUserModal = new ModalBuilder()
-					.setCustomId('deleteuserModal')
-					.setTitle('Kullanıcı Sil')
-		
-					const roomUserId = new TextInputBuilder()
-						.setCustomId('roomuserid')
-						.setLabel('Kullanıcı Id')
-						.setPlaceholder(`user id`)
-						.setStyle(TextInputStyle.Short)
-					const deleteUserAction = new ActionRowBuilder().addComponents(roomUserId)
-					deleteUserModal.addComponents(deleteUserAction)
-					return await interaction.showModal(deleteUserModal)
-		
+					const modal = new Modal("deleteuserModal", "Kullanıcı Sil")
+					modal.add('roomuserid', 'Kullanıcı Id', {
+						placeholder: 'user id'
+					})
+					const action = modal.build()
+
+					return await interaction.showModal(action)
 				}
 				if(interaction.customId=="kickuserbtn"){
-					const kickUserModal = new ModalBuilder()
-					.setCustomId('kickuserModal')
-					.setTitle('Atılacak Kullanıcı Id')
-		
-					const kickUserId = new TextInputBuilder()
-						.setCustomId('kickuserid')
-						.setLabel('Kullanıcı Id')
-						.setPlaceholder(`user id`)
-						.setStyle(TextInputStyle.Short)
-					const kickUserAction = new ActionRowBuilder().addComponents(kickUserId)
-					kickUserModal.addComponents(kickUserAction)
-					return await interaction.showModal(kickUserModal)
-		
+					const modal = new Modal("kickuserModal", "Atılacak Kullanıcı Id")
+					modal.add('kickuserid', 'Kullanıcı Id', {
+						placeholder: 'user id'
+					})
+					const action = modal.build()
+
+					return await interaction.showModal(action)
 				}
 				if(interaction.customId=="roomdeletebtn"){
 					const room = await Room.findOne({ownerId: interaction.user.id})

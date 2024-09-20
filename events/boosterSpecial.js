@@ -1,6 +1,7 @@
 const { Events, ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, EmbedBuilder } = require('discord.js')
 
 const User = require('../models/User')
+const { Modal } = require('../helpers/index')
 const { messageSender } = require('../helpers/messageSender')
 
 module.exports = {
@@ -10,33 +11,16 @@ module.exports = {
 			const sender = new messageSender(interaction)
 			if(interaction.isButton()){
 				if (interaction.customId === 'tocreate') {
-					const modal = new ModalBuilder()
-						.setCustomId('addmodal')
-						.setTitle('Rol Ekle')
-			
-					const rolname = new TextInputBuilder()
-						.setCustomId('rolname')
-						.setLabel("Rol adı")
-						.setStyle(TextInputStyle.Short)
-			
-					const color = new TextInputBuilder()
-						.setCustomId('color')
-						.setLabel("Renk")
-						.setRequired(false)
-						.setStyle(TextInputStyle.Short)
-					const emoji = new TextInputBuilder()
-						.setCustomId('emojiId')
-						.setLabel("Emoji ID")
-						.setRequired(false)
-						.setStyle(TextInputStyle.Short)
-			
-					const rolnameAction = new ActionRowBuilder().addComponents(rolname)
-					const colorAction = new ActionRowBuilder().addComponents(color)
-					const emojiAction = new ActionRowBuilder().addComponents(emoji)
-		
-					modal.addComponents(rolnameAction, colorAction, emojiAction)
-		
-					return await interaction.showModal(modal)
+					const modal = new Modal("addmodal", "Rol Ekle")
+					modal.add("rolname", "Rol Adı")
+					modal.add("color", "Renk", {
+						required: false
+					})
+					modal.add("emojiId", "Emoji ID", {
+						required: false
+					})
+					const action = modal.build()
+					return await interaction.showModal(action)
 				}
 				if (interaction.customId === 'toedit') {
 					const user = await User.findOne({userID: interaction.user.id})
@@ -46,40 +30,24 @@ module.exports = {
 						await interaction.reply('Rolünüz yok.')
 					}
 					if(user?.limit){
-						const editModal = new ModalBuilder()
-						.setCustomId('editmodal')
-						.setTitle('Rol Düzenle')
-			
-						const rolname = new TextInputBuilder()
-							.setCustomId('rolname')
-							.setLabel('Rol adı')
-							.setValue(`${uRole.name}`)
-							.setPlaceholder(`${uRole.name}`)
-							.setStyle(TextInputStyle.Short)
-				
-						const color = new TextInputBuilder()
-							.setCustomId('color')
-							.setLabel("Renk")
-							.setValue(`${uRole.color}`)
-							.setPlaceholder(`${uRole.color}`)
-							.setRequired(false)
-							.setStyle(TextInputStyle.Short)
-							
-						const emoji = new TextInputBuilder()
-							.setCustomId('emojiId')
-							.setLabel("Emoji ID")
-							.setRequired(false)
-							.setValue(`${Eid}`)
-							.setPlaceholder(`${Eid}`)
-							.setStyle(TextInputStyle.Short)
-				
-						const rolnameAction = new ActionRowBuilder().addComponents(rolname)
-						const colorAction = new ActionRowBuilder().addComponents(color)
-						const emojiAction = new ActionRowBuilder().addComponents(emoji)
-						editModal.addComponents(rolnameAction, colorAction, emojiAction)
-				
-						
-						return await interaction.showModal(editModal)
+						const modal = new Modal("editmodal", "Rol Düzenle")
+						modal.add("rolname", "Rol Adı", {
+							value: `${uRole.name}`,
+							placeholder: `${uRole.name}`,
+							required: false
+						})
+						modal.add("color", "Renk",{ 
+							value: `${uRole.color}`,
+							placeholder: `${uRole.color}`,
+							required: false
+						})
+						modal.add("emojiId", "Emoji ID", {
+							value: `${Eid}`,
+							placeholder: `${Eid}`,
+							required: false
+						})
+						const action = modal.build()
+						return await interaction.showModal(action)
 					}
 					return await interaction.reply('Üstünüze kayıtlı rol yok.')
 		
@@ -87,21 +55,13 @@ module.exports = {
 				if (interaction.customId === 'touseradd') {
 					const user = await User.findOne({userID: interaction.user.id})
 					if(user?.limit){
-						const useraddModal = new ModalBuilder()
-						.setCustomId('useraddModal')
-						.setTitle('Role Kişi Ekle')
-			
-						const chosenUserId = new TextInputBuilder()
-							.setCustomId('chosenUserId')
-							.setLabel('Kullanıcı ID')
-							.setPlaceholder(`Ekleyeceğiniz kullanıcının id'sini giriniz.`)
-							.setStyle(TextInputStyle.Short)
-				
-						const chosenUserIdAction = new ActionRowBuilder().addComponents(chosenUserId)
-						useraddModal.addComponents(chosenUserIdAction)
-				
-						
-						return await interaction.showModal(useraddModal)
+
+						const modal = new Modal("useraddModal", "Role Kişi Ekle")
+						modal.add("chosenUserId", "Kullanıcı ID", {
+							placeholder: "Ekleyeceğiniz kullanıcının id'sini giriniz."
+						})
+						const action = modal.build()
+						return await interaction.showModal(action)
 					}
 					await interaction.reply('Rolünüz yok.')
 				}
