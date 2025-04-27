@@ -14,9 +14,11 @@ class PermissionsManager {
     async isOwner(){
         const userId = this.interaction.user.id
         const { owners, isOwners } = permissions
-        if (!isOwners) return false
-
-		return owners.includes(userId)
+		if(isOwners){
+			return owners.includes(userId)
+		}
+		return false
+		
     }
 	async isRoles() {
 		const userId = this.interaction.user.id
