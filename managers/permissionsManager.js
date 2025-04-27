@@ -14,43 +14,31 @@ class PermissionsManager {
     async isOwner(){
         const userId = this.interaction.user.id
         const { owners, isOwners } = permissions
-        if(isOwners){
-            console.log(owners.includes(userId))
-            return owners.includes(userId)
-        }
+        if (!isOwners) return false
+
+		return owners.includes(userId)
     }
-    async isRoles(){
-        const userId = await this.interaction.user.id
-        const member = this.interaction.guild.members.cache.get(userId)
-        const { roles, isRole } = permissions
-		if (isRole) {
-			let statusPromises = roles.map(async (role) => {
-				let hasRole = await member.roles.cache.has(role)
-				return hasRole
-			})
+	async isRoles() {
+		const userId = this.interaction.user.id
+		const { roles, isRole } = permissions
 
-			let status = await Promise.all(statusPromises)
+		if (!isRole) return false
 
-			let hasRoleStatus = status.includes(true)
-
-			return hasRoleStatus
+		let member = this.interaction.guild.members.cache.get(userId)
+		if (!member) {
+			member = await this.interaction.guild.members.fetch(userId).catch(() => null)
 		}
+		if (!member) return false
 
-    }
+		const status = roles.map(role => member.roles.cache.has(role))
+		return status.includes(true)
+	}
     async isAuthority(...authorities){
-        if(this.permissions.isAuthority && authorities){
+        if (this.permissions.isAuthority && authorities.length) {
             const member = this.interaction.member
-            const result = authorities.map((authority)=> {
-                const isHasAuthority =  member.permissions.has(authority)
-                if(isHasAuthority){
-                    return true
-                }
-                return false
-            })
-
-            return result.includes(true)
-
+			return authorities.some(authority => member.permissions.has(authority))
         }
+		return false
     }
     async selectOwnerIds(status,...userIds){
         const userId = this.interaction.user.id
@@ -60,7 +48,7 @@ class PermissionsManager {
         }
     }
     async selectRolesIds(status, ...rolesIds){
-        const userId = await this.interaction.user.id
+        const userId = this.interaction.user.id
         const member = this.interaction.guild.members.cache.get(userId)
         const roles = rolesIds
         if(status && roles){
