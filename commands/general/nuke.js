@@ -24,11 +24,22 @@ module.exports = {
             const channelParentId = channel.parentId
             const user = interaction.user
 
-            const IsRoles = await PM.isRoles()
-            const IsOwner = await PM.isOwner()
-            const IsAuthority = await PM.isAuthority(PM.flags.Administrator)
-            if(PM.permissions.isRole && !IsRoles || PM.permissions.isOwners && !IsOwner || PM.permissions.isAuthority && !IsAuthority) return await interaction.reply("Yetersiz yetki!")
-            
+			// Yetki Kontrolü
+			const IsRoles = await PM.isRoles();
+			const IsOwner = await PM.isOwner();
+			const IsAuthority = await PM.isAuthority(PM.flags.ManageChannels, PM.flags.Administrator);
+
+			
+			const checks = [];
+			if (PM.permissions.isRole) checks.push(IsRoles);
+			if (PM.permissions.isOwners) checks.push(IsOwner);
+			if (PM.permissions.isAuthority) checks.push(IsAuthority);
+
+			const hasAtLeastOnePermission = checks.includes(true);
+			
+			if (!hasAtLeastOnePermission) return await interaction.reply("Yetersiz yetki!");
+			
+			
             if (!channel.isTextBased()) return interaction.reply({ content: 'Bu komutu yalnızca metin kanallarında kullanabilirsin.', ephemeral: true })
             
             await channel.delete().catch((error) => {

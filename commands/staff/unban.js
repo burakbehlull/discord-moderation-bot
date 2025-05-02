@@ -8,44 +8,43 @@ module.exports = {
     .addStringOption(option=> 
         option
         .setName('userid')
-        .setDescription('Banı kalkacak kullanıcı')
+        .setDescription('Banı kalkacak kullanıcının ID')
         .setRequired(true)
-    )
-    .addStringOption(option=>
-        option
-        .setName('reason')
-        .setDescription('Kalkacak unban açıklaması')
-        .setRequired(false)
     ),
     async execute(interaction){
         try {
+			
             const PM = new PermissionsManager(interaction)
 
             const userId = interaction.options.getString('userid')
-            const reason = interaction.options.getString('reason') ?? " "
-    
+			const guild = interaction.guild
+			
             if(!userId) return await interaction.reply("Kullanıcı Id'si belirtiniz.")
-    
-            const user =  await interaction.guild.members.fetch(userId)
-    
-            const IsRoles = await PM.isRoles()
-            const IsOwner = await PM.isOwner()
-            const IsAuthority = await PM.isAuthority(PM.flags.BanMembers, PM.flags.Administrator)
-            if(PM.permissions.isRole && !IsRoles || PM.permissions.isOwners && !IsOwner || PM.permissions.isAuthority && !IsAuthority) return await interaction.reply("Yetersiz yetki!")
-            
-    
-            if(!user) return await interaction.reply('Kullanıcı bulunamadı!')
-            
-            await user.kick({
-                reason
-            }).then(async()=> {
-                await interaction.reply('Kullanıcı kicklendi!')
+				
+			// Yetki Kontrolü
+			const IsRoles = await PM.isRoles();
+			const IsOwner = await PM.isOwner();
+			const IsAuthority = await PM.isAuthority(PM.flags.BanMembers, PM.flags.Administrator);
+
+			
+			const checks = [];
+			if (PM.permissions.isRole) checks.push(IsRoles);
+			if (PM.permissions.isOwners) checks.push(IsOwner);
+			if (PM.permissions.isAuthority) checks.push(IsAuthority);
+
+			const hasAtLeastOnePermission = checks.includes(true);
+			
+			if (!hasAtLeastOnePermission) return await interaction.reply("Yetersiz yetki!");
+			
+            await guild.bans.remove(userId).then(async()=> {
+                await interaction.reply(` <@${userId}> adlı kullanıcının banı kaldırıldı.`);
                 return;
             }).catch(async(err)=> {
                 console.log(err)
                 await interaction.reply('Kullanıcının banı açılırken hata oluştu!')
                 return;
             })
+			
         } catch (error) {
             console.log('Hata: ', error.message)
         }

@@ -8,7 +8,7 @@ module.exports = {
     .setDescription('Mesajları siler')
     .addIntegerOption(option=> 
         option
-        .setName('amount') // number of messages to be deleted
+        .setName('amount')
         .setDescription('Silenecek mesaj sayısı')
         .setRequired(true)
     ),
@@ -18,9 +18,20 @@ module.exports = {
 
         if (deleteCount < 1 || deleteCount > 100) return await interaction.reply('Lütfen 1 ile 100 arasında bir sayı belirtin.')
 
-        const IsAuthority = await PM.isAuthority(PM.flags.ManageMessages, PM.flags.Administrator)
-        if(PM.permissions.isAuthority && !IsAuthority) return await interaction.reply("Yetersiz yetki!")
-        
+		// Yetki Kontrolü
+        const IsRoles = await PM.isRoles();
+		const IsOwner = await PM.isOwner();
+		const IsAuthority = await PM.isAuthority(PM.flags.ManageMessages, PM.flags.Administrator);
+			
+		const checks = [];
+		if (PM.permissions.isRole) checks.push(IsRoles);
+		if (PM.permissions.isOwners) checks.push(IsOwner);
+		if (PM.permissions.isAuthority) checks.push(IsAuthority);
+
+		const hasAtLeastOnePermission = checks.includes(true);
+			
+		if (!hasAtLeastOnePermission) return await interaction.reply("Yetersiz yetki!");
+	
         try {
             await interaction.channel.bulkDelete(deleteCount, true)
             await interaction.reply(`${deleteCount} mesaj başarıyla silindi.`)
