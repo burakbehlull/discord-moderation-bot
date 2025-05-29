@@ -34,7 +34,7 @@ module.exports = {
             if(!isRole) return await interaction.reply('Böyle bir rol yok!')
             
             const isUserHasRole = user.roles.cache.has(role.id)
-            if(isUserHasRole) return await interaction.reply('Kullanıcı zaten bu role sahip!')
+            if(!isUserHasRole) return await interaction.reply('Kullanıcı zaten bu role sahip!')
             
     
            	// Yetki Kontrolü
@@ -54,7 +54,7 @@ module.exports = {
 		  
     
             await user.roles?.remove(role)
-            return await interaction.reply(`<@${user.id}> adlı kullanıcıdan <@${rol.id}> rolü başarıyla alındı!`)
+            return await interaction.reply(`<@${user.id}> adlı kullanıcıdan ${role} rolü başarıyla alındı!`)
         } catch (error) {
             console.log('Hata: ', error.message)
         }
