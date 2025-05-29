@@ -54,7 +54,7 @@ module.exports = {
 		  
     
             await user.roles?.add(role)
-            return await interaction.reply(`<@${user.id}> adlı kullanıcıya <@${rol.id}> rolü başarıyla elendi!`)
+            return await interaction.reply(`<@${user.id}> adlı kullanıcıya ${role} rolü başarıyla verildi!`)
         } catch (error) {
             console.log('Hata: ', error.message)
         }
